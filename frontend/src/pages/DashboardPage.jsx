@@ -25,7 +25,6 @@ const DashboardPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // ================= ADMIN / HR =================
         if (role === "admin" || role === "hr") {
           const [sRes, cRes, tRes, bRes] = await Promise.all([
             getStudents(),
@@ -66,32 +65,102 @@ const DashboardPage = () => {
 
       {/* ================= ADMIN / HR VIEW ================= */}
       {(role === "admin" || role === "hr") && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <StatCard
-            title="Students"
-            value={stats.students}
-            icon={<Users size={28} />}
-            loading={loading}
-          />
-          <StatCard
-            title="Courses"
-            value={stats.courses}
-            icon={<BookOpen size={28} />}
-            loading={loading}
-          />
-          <StatCard
-            title="Tutors"
-            value={stats.tutors}
-            icon={<GraduationCap size={28} />}
-            loading={loading}
-          />
-          <StatCard
-            title="Batches"
-            value={stats.batches}
-            icon={<Layers size={28} />}
-            loading={loading}
-          />
-        </div>
+        <>
+          {/* ===== STAT CARDS ===== */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <StatCard
+              title="Students"
+              value={stats.students}
+              icon={<Users size={28} />}
+              loading={loading}
+            />
+            <StatCard
+              title="Courses"
+              value={stats.courses}
+              icon={<BookOpen size={28} />}
+              loading={loading}
+            />
+            <StatCard
+              title="Tutors"
+              value={stats.tutors}
+              icon={<GraduationCap size={28} />}
+              loading={loading}
+            />
+            <StatCard
+              title="Batches"
+              value={stats.batches}
+              icon={<Layers size={28} />}
+              loading={loading}
+            />
+          </div>
+
+          {/* ===== ANALYTICS SECTION ===== */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-10">
+
+            {/* Bar Overview */}
+            <div className="bg-white rounded-2xl shadow-lg p-6">
+              <h2 className="text-lg font-semibold mb-6">
+                System Analytics
+              </h2>
+
+              <Bar
+                label="Students"
+                value={stats.students}
+                color="bg-blue-500"
+              />
+              <Bar
+                label="Tutors"
+                value={stats.tutors}
+                color="bg-green-500"
+              />
+              <Bar
+                label="Courses"
+                value={stats.courses}
+                color="bg-purple-500"
+              />
+              <Bar
+                label="Batches"
+                value={stats.batches}
+                color="bg-orange-500"
+              />
+            </div>
+
+            {/* Insights Panel */}
+            <div className="bg-white rounded-2xl shadow-lg p-6">
+              <h2 className="text-lg font-semibold mb-6">
+                Quick Insights
+              </h2>
+
+              <ul className="space-y-4 text-gray-600 text-sm">
+                <li className="flex justify-between">
+                  <span>Total Students</span>
+                  <span className="font-semibold">
+                    {stats.students}
+                  </span>
+                </li>
+                <li className="flex justify-between">
+                  <span>Active Courses</span>
+                  <span className="font-semibold">
+                    {stats.courses}
+                  </span>
+                </li>
+                <li className="flex justify-between">
+                  <span>Total Tutors</span>
+                  <span className="font-semibold">
+                    {stats.tutors}
+                  </span>
+                </li>
+                <li className="flex justify-between">
+                  <span>Running Batches</span>
+                  <span className="font-semibold">
+                    {stats.batches}
+                  </span>
+                </li>
+              </ul>
+            </div>
+
+          </div>
+        </>
       )}
 
       {/* ================= TUTOR VIEW ================= */}
@@ -136,5 +205,26 @@ const StatCard = ({ title, value, icon, loading }) => (
     </div>
   </div>
 );
+
+/* ================= BAR COMPONENT ================= */
+
+const Bar = ({ label, value, color }) => {
+  const percentage = Math.min(value * 10, 100);
+
+  return (
+    <div className="mb-6">
+      <div className="flex justify-between text-sm mb-2">
+        <span>{label}</span>
+        <span className="font-medium">{value}</span>
+      </div>
+      <div className="w-full bg-gray-200 h-3 rounded-full">
+        <div
+          className={`${color} h-3 rounded-full transition-all duration-500`}
+          style={{ width: `${percentage}%` }}
+        ></div>
+      </div>
+    </div>
+  );
+};
 
 export default DashboardPage;
